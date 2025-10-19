@@ -1,4 +1,5 @@
 set_io clock P7
+set_io button P8
 set_io led0 J11
 set_io hsync C6
 set_io vsync C7

@@ -1,19 +1,20 @@
 // VGA display
 
-module top(clock, led0, hsync, vsync, red, green, blue);
+module top(clock, button, led0, hsync, vsync, red, green, blue);
    input wire  clock;
+   input wire  button;
 
    output reg  led0;
-   output reg       hsync;
-   output reg       vsync;
-   output reg       red;
-   output reg       green;
-   output reg       blue;
+   output reg  hsync;
+   output reg  vsync;
+   output reg  red;
+   output reg  green;
+   output reg  blue;
 
-   reg [23:0]       div = 0;
+   reg [23:0]  div = 0;
 
-   wire             pclk;
-   wire             locked;
+   wire        pclk;
+   wire        locked;
 
    pll pclk_pll (.clock_in(clock), .clock_out(pclk), .locked(locked));
 
@@ -24,6 +25,7 @@ module top(clock, led0, hsync, vsync, red, green, blue);
      end
 
    vga display(.clock(pclk),
+               .button(button),
                .hsync(hsync),
                .vsync(vsync),
                .r(red),

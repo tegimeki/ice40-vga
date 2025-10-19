@@ -1,24 +1,28 @@
 // VGA image generator
 
-module vga(clock, hsync, vsync, r, g, b);
+module vga(clock, button, hsync, vsync, r, g, b);
    input wire clock;
+   input wire button;
+
    output reg hsync;
    output reg vsync;
    output reg r;
    output reg g;
    output reg b;
 
-   reg [11:0]  Time;
+   reg [11:0]  Frame;
    reg [9:0]   Xpos;
    reg [8:0]   Ypos;
-   reg [9:0]   Xfwd;
-   reg [8:0]   Yfwd;
-   reg [9:0]   Xrev;
-   reg [8:0]   Yrev;
    
    reg         Hpos, Vpos;
    wire        Xmax = (Xpos == 800);
-   
+   wire [10:0] Ex = 320;
+   wire [10:0] Ey = 240;
+   wire [10:0] Dx = Xpos <= Ex ? Ex - Xpos : Xpos - Ex;
+   wire [10:0] Dy = Ypos <= Ey ? Ey - Ypos : Ypos - Ey;
+   wire [11:0] Dm = (Dx + Dy);
+   wire [14:0] D = button ? (Dm << Dm[6:5]) - Frame : (Dm >> Dm[4:3]) - Frame;
+
    always @(posedge clock)
      begin
         if (Xmax)
@@ -38,27 +42,20 @@ module vga(clock, hsync, vsync, r, g, b);
 
    always @(negedge Vpos)
      begin
-        Time <= Time + 1;
+        Frame <= Frame + 1;
      end
 
    always @(posedge clock)
      begin
-        Xfwd <= (Xpos + Time);
-        Yfwd <= (Ypos + Time);
-        Xrev <= (Xpos - Time);
-        Yrev <= (Ypos - Time);
-
         vsync <= ~Vpos;
         hsync <= ~Hpos;
      end
 
    always @(posedge clock)
      begin
-        r <= (Yfwd < 128 || Yfwd > 256) ^ (Xrev < 128 || Xrev > 256);
-   
-        g <= Xfwd[3] ^ Yfwd[3];
-   
-        b <= (Yrev[6] ^ Xrev[6]) | g;
+        r <= D[7+Frame[8]];
+        g <= D[6+Frame[9]];
+        b <= D[5+Frame[10]];
      end
 
 
