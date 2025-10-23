@@ -19,7 +19,7 @@ $(OUT):
 	mkdir -p $@
 
 flash: $(OUT)/top.bin
-	iceprog $<
+	iceprog -X $<
 
 clean:
 	@rm -rf $(OUT)

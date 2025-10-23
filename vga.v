@@ -6,9 +6,9 @@ module vga(clock, button, hsync, vsync, r, g, b);
 
    output reg hsync;
    output reg vsync;
-   output reg r;
-   output reg g;
-   output reg b;
+   output reg [3:0] r;
+   output reg [3:0] g;
+   output reg [3:0] b;
 
    reg [11:0]  Frame;
    reg [9:0]   Xpos;
@@ -53,9 +53,9 @@ module vga(clock, button, hsync, vsync, r, g, b);
 
    always @(posedge clock)
      begin
-        r <= D[7+Frame[8]];
-        g <= D[6+Frame[9]];
-        b <= D[5+Frame[10]];
+        r[3:0] <= (vsync|hsync) ? 0 : (D[7:4]);
+        g[3:0] <= (vsync|hsync) ? 0 : (D[6:3]);
+        b[3:0] <= (vsync|hsync) ? 0 : (D[5:2]);
      end
 
 

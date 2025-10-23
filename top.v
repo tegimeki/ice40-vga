@@ -1,5 +1,6 @@
 // VGA display
 
+
 module top(clock, button, led0, hsync, vsync, red, green, blue);
    input wire  clock;
    input wire  button;
@@ -7,9 +8,9 @@ module top(clock, button, led0, hsync, vsync, red, green, blue);
    output reg  led0;
    output reg  hsync;
    output reg  vsync;
-   output reg  red;
-   output reg  green;
-   output reg  blue;
+   output reg  [3:0] red;
+   output reg  [3:0] green;
+   output reg  [3:0] blue;
 
    reg [23:0]  div = 0;
 
